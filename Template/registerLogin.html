@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block class %}class="sub_page"{% endblock class %}
+
+{% block main %}
+
+
+
+
+
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<div id="loginReg-container">
+    
+    <article id="loginReg-article">
+        <div id="loginReg-div">
+            <button class="loginReg-toggle-btn" onclick="showRegistrationForm()">Register</button>
+            <button class="loginReg-toggle-btn" onclick="showLoginForm()">Login</button>
+
+        </div>
+        
+        <form method="post" class="loginReg-registrationForm" id="loginReg-registrationForm" >
+            {% csrf_token %}
+            <h3 style="font-weight: 600;">Register</h3>
+            <div class="loginReg-form-group">
+                <label for="loginReg-registerUsername" class="loginReg-lable">Name:</label>
+                <input type="text" id="loginReg-registerUsername" name="first_name" required class="loginReg-input" placeholder="Enter your Name">
+            </div>
+            <div class="loginReg-form-group">
+                <label for="loginReg-registerEmail" class="loginReg-lable">Email:</label>
+                <input type="email" id="loginReg-registerEmail" name="username" required class="loginReg-input" placeholder="Enter your Email">
+            </div>
+            <div class="loginReg-form-group">
+                <label for="loginReg-registerPassword" class="loginReg-lable">Password:</label>
+                <input type="password" id="loginReg-registerPassword1" name="password1" required class="loginReg-input" placeholder="Enter your PAssword">
+                
+                <input type="password" id="loginReg-registerPassword2" name="password2" required class="loginReg-input" placeholder="Re-entered password">
+
+            </div>
+            <button type="submit" class="loginReg-button" name="register">Register</button>
+    
+        </form>
+    
+        <form method="post" class="loginReg-registrationForm" id="loginReg-loginForm" style="display: none;">
+            {% csrf_token %}
+            <h3 style="font-weight: 600;">Login</h3>
+            <div class="loginReg-form-group">
+                <label for="loginReg-loginEmail" class="loginReg-lable">Email:</label>
+                <input type="" id="loginReg-loginEmail" name="username" required class="loginReg-input" placeholder="Enter your username">
+            </div>
+            <div class="loginReg-form-group">
+                <label for="loginReg-loginPassword" class="loginReg-lable">Password:</label>
+                <input type="password" id="loginReg-loginPassword" name="password" required class="loginReg-input" placeholder="Enter your Password">
+            </div>
+            <button type="submit" class="loginReg-button" name="login_user_">Login</button>
+        </form>
+        
+        
+    </article>
+    
+</div>
+{% endblock main %}

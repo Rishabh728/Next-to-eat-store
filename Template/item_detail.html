@@ -1,0 +1,84 @@
+
+{% extends "base.html" %}
+{% block class %}class="sub_page"{% endblock class %}
+
+{% block main %}
+
+
+<article id="search_result_hide">
+    {% if query %}
+        {% if results %}
+            <h2 class="search-result-heading">Search Results:</h2>
+            <ul class="search-result-list">
+                {% for item in results %}
+                <li>
+                    <a href="{% url 'item_detail' item.id %}" class="search-result-link">
+                        {{ item.Item_name }} - ₹{{item.Price}}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="search-result-empty">No results found for "{{ query }}".</p>
+            {% if suggestions %}
+            <h3 class="search-result-suggestions-heading">Did you mean:</h3>
+            <ul class="search-result-suggestions-list">
+                {% for suggestion in suggestions %}
+                <li>
+                    <a href="{% url 'item_detail' suggestion.id %}">
+                        {{ suggestion.Item_name }} - ₹{{suggestion.Price}}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</article>
+
+
+
+<div class="item_detail_search-container">
+    <!-- Item Header -->
+    <div class="item_detail_search-header">
+        <h1 class="item_detail_search-title">{{ item.Item_name }}</h1>
+    </div>
+
+    <!-- Item Details Section -->
+    <div class="item_detail_search-content">
+        <!-- Item Image -->
+        <div class="item_detail_search-image">
+            {% if item.Image %}
+            <img src="{{ item.Image.url }}" alt="{{ item.Item_name }}" class="item_detail_search-img">
+            {% else %}
+            <p>No image available</p>
+            {% endif %}
+        </div>
+
+        <!-- Item Info -->
+        <div class="item_detail_search-info">
+            <p class="item_detail_search-description">
+                <strong>Description:</strong> {{ item.Description }}
+            </p>
+            <p class="item_detail_search-price">
+                <strong>Price:</strong> $ {{ item.Price }}
+            </p>
+            <p class="item_detail_search-category">
+                <strong>Category:</strong>
+                {% if item.Category %}
+                    {{ item.Category.Name }}
+                {% else %}
+                    <span>Uncategorized</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="item_detail_search-footer">
+        <a href="{% url 'menu' %}" class="item_detail_search-back-btn">Back to Search</a>
+    </div>
+</div>
+
+{% endblock main %}
+

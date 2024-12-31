@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+{% block class %}class="sub_page"{% endblock class %}
+
+{% block cart_data %}
+
+  
+  
+{% endblock cart_data %}
+
+{% block main %}
+
+
+
+
+{% comment %} <section id="custom-top-cart-container-body">
+    <div class="custom-top-cart-container">
+        <h1>Your Cart</h1>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cart_item in cart_items %}
+                    <tr>
+                        <td data-label="Item">{{ cart_item.item.Item_name }}</td>
+                        <td data-label="Quantity" >
+                            <div>
+                            <button class="decrease-btn custom-top-cart-qty-td" data-id="{{ cart_item.id }}">-</button>
+                            <span class="quantity" id="quantity-{{ cart_item.id }}">{{ cart_item.quantity }}</span>
+                            <button class="increase-btn custom-top-cart-qty-td" data-id="{{ cart_item.id }}">+</button>
+                            </div>
+                            
+                        </td>
+                        <td data-label="Price">₹{{ cart_item.item.Price }}</td>
+                        <td data-label="Total" id="item-total-{{ cart_item.id }}">₹{{ cart_item.get_total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="custom-top-total-price">Total Price: ₹<span id="cart-total">{{ total_price }}</span></div>
+        <button class="custom-top-continue-shopping">Make Payment</button>
+    </div>
+</section>
+
+<!-- shipping address start -->
+<section class="custom-shipping">       
+    <div class="custom-shipping-container">
+        <h1>Shipping Address</h1>
+        <p>Please enter your shipping details.</p>
+        
+        <form action="{% url "shipping_add" %}" method="POST" >
+            {% csrf_token %}
+            <div class="custom-shipping-form">
+            
+                <div class="custom-shipping-fields custom-shipping-fields--2">
+                    <label class="custom-shipping-field ">
+                        <span class="custom-shipping-field__label" for="custom-shipping-firstname">First name</span>
+                        <input class="custom-shipping-field__input" type="text" id="custom-shipping-firstname" value="john" name = "first_name" />
+                    </label>
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-lastname">Last name</span>
+                        <input class="custom-shipping-field__input" type="text" id="custom-shipping-lastname" value="Doe" name = "last_name"/>
+                    </label>
+                </div>
+            
+                <label class="custom-shipping-field">
+                    <span class="custom-shipping-field__label" for="custom-shipping-address">Address</span>
+                    <input class="custom-shipping-field__input" type="text" id="custom-shipping-address" name = "address" />
+                </label>
+            
+                <label class="custom-shipping-field">
+                    <span class="custom-shipping-field__label" for="custom-shipping-phone">Phone number</span>
+                    <input class="custom-shipping-field__input" type="tel" id="custom-shipping-phone" name = "phone" />
+                </label>
+            
+                <label class="custom-shipping-field">
+                    <span class="custom-shipping-field__label" for="custom-shipping-email">Email</span>
+                    <input class="custom-shipping-field__input" type="email" id="custom-shipping-email" name = "email"/>
+                </label>
+            
+                <label class="custom-shipping-field">
+                    <span class="custom-shipping-field__label" for="custom-shipping-country">Country</span>
+                    <input class="custom-shipping-field__input" id="custom-shipping-country" name = "country">
+                    
+                
+                </label>
+        
+                <div class="custom-shipping-fields custom-shipping-fields--3">
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-zipcode">Zip code</span>
+                        <input class="custom-shipping-field__input" type="text" id="custom-shipping-zipcode" name = "zip_code" />
+                    </label>
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-city">City</span>
+                        <input class="custom-shipping-field__input" type="text" id="custom-shipping-city" name = "city"/>
+                    </label>
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-state">State</span>
+                            <input class="custom-shipping-field__input" id="custom-shipping-state" name="state">
+                        <option value=""></option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            
+            <a href="" class="custom-shipping-button">
+                <button id="custom-shipping-button_b">Continue</button>
+            </a>
+        </form>
+    </div>
+            
+</section>
+<!-- shipping address start -->
+
+
+<script>
+    // Attach event listeners to increase and decrease buttons
+    document.querySelectorAll('.increase-btn').forEach(button => {
+        button.addEventListener('click', () => updateQuantity(button.dataset.id, 'increase'));
+    });
+
+    document.querySelectorAll('.decrease-btn').forEach(button => {
+        button.addEventListener('click', () => updateQuantity(button.dataset.id, 'decrease'));
+    });
+
+    function updateQuantity(cartItemId, action) {
+        fetch(`/cart/update/${cartItemId}/${action}/`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                // Update quantity and totals in the DOM
+                document.querySelector(`#quantity-${cartItemId}`).innerText = data.quantity;
+                document.querySelector(`#item-total-${cartItemId}`).innerText = `$${data.item_total_price}`;
+                document.querySelector(`#cart-total`).innerText = data.cart_total_price;
+            });
+    }
+
+    // shipping adress
+
+    document.addEventListener("DOMContentLoaded", function () {
+  // Get the button and the shipping form
+  const customPaymentButton = document.querySelector('.custom-top-continue-shopping');  // Assuming it's a single button
+  const customShipping = document.querySelector('.custom-shipping');  // The div containing the shipping form
+  const cart_container = document.getElementById('custom-top-cart-container-body') 
+  
+  // Initially hide the shipping form
+  customShipping.style.display = 'none';
+  
+  // Add event listener to the button
+  customPaymentButton.addEventListener('click', function () {
+    // Toggle the display of the shipping form when the button is clicked
+    if (customShipping.style.display === 'none' || customShipping.style.display === '') {
+      customShipping.style.display = 'block';  // Show the shipping form
+      cart_container.style.display = 'none'
+    } 
+  });
+});
+
+
+</script> {% endcomment %}
+
+
+
+<section id="custom-top-cart-container-body">
+    <div class="custom-top-cart-container">
+        <h1>Your Cart</h1>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cart_item in cart_items %}
+                    <tr>
+                        <td data-label="Item">{{ cart_item.item.Item_name }}</td>
+                        <td data-label="Quantity">
+                            <div>
+                                <button class="decrease-btn custom-top-cart-qty-td" data-id="{{ cart_item.id }}">-</button>
+                                <span class="quantity" id="quantity-{{ cart_item.id }}">{{ cart_item.quantity }}</span>
+                                <button class="increase-btn custom-top-cart-qty-td" data-id="{{ cart_item.id }}">+</button>
+                            </div>
+                        </td>
+                        <td data-label="Price">₹{{ cart_item.item.Price }}</td>
+                        <td data-label="Total" id="item-total-{{ cart_item.id }}">₹{{ cart_item.get_total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="custom-top-total-price">Total Price: ₹<span id="cart-total">{{ total_price }}</span></div>
+        <button class="custom-top-continue-shopping">Make Payment</button>
+    </div>
+</section>
+
+<section class="custom-shipping">
+    <div class="custom-shipping-container">
+        <h1>Shipping Address</h1>
+        <p>Please enter your shipping details.</p>
+        <form action="{% url 'cart_and_shipping' %}" method="POST">
+            {% csrf_token %}
+            <div class="custom-shipping-form">
+                <div class="custom-shipping-fields custom-shipping-fields--2">
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-firstname">First name</span>
+                        <input class="custom-shipping-field__input" type="text" id="custom-shipping-firstname" name="first_name" required maxlength="10"/>
+                    </label>
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-lastname">Last name</span>
+                        <input class="custom-shipping-field__input" type="text" id="custom-shipping-lastname" name="last_name" required maxlength="10" />
+                    </label>
+                </div>
+                <label class="custom-shipping-field">
+                    <span class="custom-shipping-field__label" for="custom-shipping-address">Address</span>
+                    <input class="custom-shipping-field__input" type="text" id="custom-shipping-address" name="address" required maxlength="40"/>
+                </label>
+                <label class="custom-shipping-field">
+                    <span class="custom-shipping-field__label" for="custom-shipping-phone">Phone number</span>
+                    <input class="custom-shipping-field__input" type="tel" id="custom-shipping-phone" name="phone" required maxlength="10"/>
+                </label>
+                <label class="custom-shipping-field">
+                    <span class="custom-shipping-field__label" for="custom-shipping-email">Email</span>
+                    <input class="custom-shipping-field__input" type="email" id="custom-shipping-email" name="email" maxlength="20"/>
+                </label>
+                <label class="custom-shipping-field">
+                    <span class="custom-shipping-field__label" for="custom-shipping-country">Country</span>
+                    <input class="custom-shipping-field__input" id="custom-shipping-country" name="country" required maxlength="10"/>
+                </label>
+                <div class="custom-shipping-fields custom-shipping-fields--3">
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-zipcode">Zip code</span>
+                        <input class="custom-shipping-field__input" type="text" id="custom-shipping-zipcode" name="zip_code" required maxlength="10"/>
+                    </label>
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-city">City</span>
+                        <input class="custom-shipping-field__input" type="text" id="custom-shipping-city" name="city" required maxlength="10"/>
+                    </label>
+                    <label class="custom-shipping-field">
+                        <span class="custom-shipping-field__label" for="custom-shipping-state">State</span>
+                        <input class="custom-shipping-field__input" id="custom-shipping-state" name="state" required maxlength="10"/>
+                    </label>
+                </div>
+            </div>
+            <button class="custom-shipping-button" id="custom-shipping-button_b" type="submit">Continue</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll('.increase-btn').forEach(button => {
+        button.addEventListener('click', () => updateQuantity(button.dataset.id, 'increase'));
+    });
+
+    document.querySelectorAll('.decrease-btn').forEach(button => {
+        button.addEventListener('click', () => updateQuantity(button.dataset.id, 'decrease'));
+    });
+
+    function updateQuantity(cartItemId, action) {
+        fetch(`/cart/?cart_item_id=${cartItemId}&action=${action}`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById(`quantity-${cartItemId}`).innerText = data.quantity;
+                document.getElementById(`item-total-${cartItemId}`).innerText = `₹${data.item_total_price}`;
+                document.getElementById('cart-total').innerText = data.cart_total_price;
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const customPaymentButton = document.querySelector('.custom-top-continue-shopping');
+        const customShipping = document.querySelector('.custom-shipping');
+        const cartContainer = document.getElementById('custom-top-cart-container-body');
+
+        customShipping.style.display = 'none';
+
+        customPaymentButton.addEventListener('click', function () {
+            customShipping.style.display = 'block';
+            cartContainer.style.display = 'none';
+        });
+    });
+</script>
+
+
+
+
+
+
+{% endblock main %}
+
+

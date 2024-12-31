@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block class %}class="sub_page"{% endblock class %}
+{% block FeedbackStatus %}active{% endblock FeedbackStatus %}
+{% block main %}
+   <!-- client section -->
+
+   <section class="client_section layout_padding-bottom">
+    <div class="container">
+      <div class="heading_container heading_center psudo_white_primary mb_45">
+        <h2>
+          What Says Our Customers
+        </h2>
+      </div>
+      <div class="carousel-wrap row ">
+        <div class="owl-carousel client_owl-carousel">
+          {% for f in feedback  %}
+          <div class="item">
+            <div class="box">
+              <div class="detail-box">
+                <p>
+                  {{f.Description}}
+                </p>
+                <h6>
+                  {{f.User_name}}
+                </h6>
+                <p>
+                  Rating: {{f.Rating}}/5
+
+                </p>
+              </div>
+              <div class="img-box">
+                <img src="/media/{{f.Image}}" alt="" class="box-img">
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end client section -->
+
+<!-- feedback form start -->
+
+<div class="feedform-container">
+  <form method="POST" class="feedform-tag_form"   action=" {% url "submit_feedback" %}">
+    {% csrf_token %}
+    
+    <h2 style="font-weight: bolder;">Welcome, {{ user.first_name }}!</h2>
+
+
+    <section class="feedform-user-form">      
+      <!-- Left Section: Name and Email -->
+      <div class="feedform-left">
+          
+          <label for="feedform-name">Name:</label>
+          <input type="text" id="feedform-name" name="name" placeholder="Enter your name" value="{{ user.first_name }}" {{ user.first_name }} required {% if user.is_authenticated %}   readonly {% endif %} maxlength="10" >
+
+          <label for="feedform-email">Email:</label>
+          <input type="email" id="feedform-email" name="email" placeholder="Enter your email" maxlength="20" required value="{{ user.username }}"  required {% if user.is_authenticated %}   readonly {% endif %}>
+
+          
+          <div class="containerRating">
+            <h3>Rating:</h3>
+            <div class="star-rating">
+              <input type="radio" id="star1" name="rating" value="1" >
+              <label for="star1" class="star">⭐</label>
+            </div>
+
+            <div class="star-rating">
+              <input type="radio" id="star2" name="rating" value="2" >
+              <label for="star2" class="star">⭐⭐</label>
+            </div>
+
+            <div class="star-rating">
+              <input type="radio" id="star3" name="rating" value="3" >
+              <label for="star3" class="star">⭐⭐⭐</label>
+            </div>
+          </div>
+      </div>
+
+      <!-- Right Section: Feedback -->
+      <div class="feedform-right">
+          <label for="feedform-feedback">Feedback:</label>
+          <textarea id="feedform-feedback" name="feedback" rows="5" maxlength="30" placeholder="Write your feedback here" required></textarea>
+
+          
+
+
+
+
+          <button type="submit" class="feedform-button">Submit</button>
+      </div>
+    </section>
+      
+  </form>
+</div>
+
+
+<!-- feedback form end -->
+
+{% endblock main %}
+    
