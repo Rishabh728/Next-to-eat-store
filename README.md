@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # next-to-eat-store
 A full-fledged online store built with Django, offering features like user authentication, order management, payment processing (via Stripe), and a responsive UI.
 
@@ -34,3 +35,7 @@ The website is designed with a clean, modern, and responsive UI, ensuring a smoo
 Feel free to clone or fork this repository, contribute to its development, or use it as a base for your own e-commerce projects.
 
 
+=======
+# Next-to-eat-store
+A full-fledged online store built with Django, offering features like user authentication, order management, payment processing (via Stripe), and a responsive UI.
+>>>>>>> b8791c04abf5347dd5c37af7cbf47157c80c6964
