@@ -4,14 +4,15 @@ const searchContainer = document.getElementById('nav_search_custom-search-contai
         const searchBar = document.getElementById('nav_search_custom-search-bar');
         const searchIcon = document.getElementById('nav_search_custom-search-icon');
         const userCart = document.getElementById('user_cart');
-        const searchSubmit = document.getElementById('nav_search_custom-search-submit');
+const searchSubmit = document.getElementById('nav_search_custom-search-submit');
+        const user_name_hide = document.getElementById('user_name_hide')
 
         searchIcon.addEventListener('click', () => {
-            searchContainer.classList.toggle('active');
-            userCart.classList.toggle('hidden');
+          searchContainer.classList.toggle('active');
+          userCart.classList.toggle('hidden');
             if (searchContainer.classList.contains('active')) {
                 searchBar.querySelector('input').focus();
-                searchBar.style.cssText = "border: 0.1px solid #ccc;  ";  
+                searchBar.style.cssText = "border: 0.1px solid #ccc;  background-color: none; ";  
                 searchIcon.style.display = "none"
                 // Close the search bar when clicking outside
                 document.addEventListener('click', function(event) {
